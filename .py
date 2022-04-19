@@ -19,115 +19,53 @@ for i in range(101):
 # Newline so command prompt isn't on the same line
 print()
 
-top = -1
+Operators = set(['+', '-', '*', '/', '(', ')', '^'])  # collection of Operators
+
+Priority = {'+': 1, '-': 1, '*': 2, '/': 2, '^': 3}  # dictionary having priorities of Operators
 
 
-def push(value):
-    global top
-    top += 1
-    stack.append(value)
+def infixToPostfix(expression):
+    stack = []  # initialization of empty stack
+
+    output = ''
+
+    for character in expression:
+
+        if character not in Operators:  # if an operand append in postfix expression
+
+            output += character
+
+        elif character == '(':  # else Operators push onto stack
+
+            stack.append('(')
+
+        elif character == ')':
+
+            while stack and stack[-1] != '(':
+                output += stack.pop()
+
+            stack.pop()
+
+        else:
+
+            while stack and stack[-1] != '(' and Priority[character] <= Priority[stack[-1]]:
+                output += stack.pop()
+
+            stack.append(character)
+
+    while stack:
+        output += stack.pop()
+
+    return output
+
+from colorama import Back,Fore,Style
+expression = input(Back.LIGHTWHITE_EX+ Fore.RED+'\n\nEnter Infix Expression ')
+
+print(Back.LIGHTWHITE_EX+ Fore.RED+'\nInfix Notation: ', expression)
+result=infixToPostfix(expression)
 
 
-def pop():
-    global top
-    if (top == -1):
-        print("Exit")
-    else:
-        x = stack.pop()
-        top -= 1
-        return x
+print(Back.LIGHTWHITE_EX+ Fore.RED+'\nPostfix Notation: ', result)
 
-
-'''
-def evaluation(target_list):
-    for i in target_list:
-    if(i>='0' and i<='9'):
-        push(i)
-    else:
-        x = pop()
-        y = pop()
-        result = operation(x,y,i)
-        push(result)
-postfix = stack[top]
-print(postfix)
-'''
-
-
-def operation(a, b, op):
-    a = int(a)
-    b = int(b)
-    if (op == '+'):
-        return a + b
-    elif (op == '-'):
-        return a - b
-    elif (op == '*'):
-        return a * b
-    elif (op == '/'):
-        return a / b
-    elif (op == '^'):
-        return pow(a, b)
-
-from colorama import Fore, Back, Style
-print(Back.LIGHTWHITE_EX + Style.BRIGHT+ Fore.RED+'                Infix To Postfix')
-print(Style.BRIGHT + '')
-expression = input(Fore.RED+ Back.LIGHTWHITE_EX+"              Enter the expression \n")
-expression_list = []
-operand = ""
-stack = []
-
-priority_op = {'-': 1, '+': 2, '/': 3, '*': 4, '^': 5}
-
-for i in expression:
-    if ((i >= 'A' and i <= 'Z') or (i >= 'a' and i <= 'z') or (i >= '0' and i <= '9')):
-        operand += i
-    else:
-        if (operand != ""):
-            expression_list.append(operand)
-            operand = ""
-        expression_list.append(i)
-if (operand != ""):
-    expression_list.append(operand)
-print(expression_list)
-
-target_list = []
-
-for i in expression_list:
-    if ((i >= 'A' and i <= 'Z') or (i >= 'a' and i <= 'z') or (i >= '0' and i <= '9')):
-        target_list.append(i)
-    else:
-        if (top == -1):
-            push(i)
-        elif (i == '('):
-            push(i)
-        elif (i == ")"):
-            while (stack[top] != '('):
-                x = pop()
-                target_list.append(x)
-            if (stack[top] == '('):
-                pop()
-        elif (stack[top] == '('):
-            push(i)
-        elif (priority_op[i] > priority_op[stack[top]]):
-            push(i)
-        elif (priority_op[i] < priority_op[stack[top]]):
-            x = pop()
-            target_list.append(x)
-            push(i)
-while (top >= 0):
-    x = pop()
-    target_list.append(x)
-
-print(target_list)
-
-for i in target_list:
-    if (i >= '0' and i <= '9'):
-        push(i)
-    else:
-        x = pop()
-        y = pop()
-        result = operation(x, y, i)
-        push(result)
-
-postfix = stack[top]
-print(postfix)
 print(Style.RESET_ALL)
+input(Back.LIGHTWHITE_EX+ Fore.RED+"Enter any key to Quit")
